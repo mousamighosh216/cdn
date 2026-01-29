@@ -1,11 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
+	"github.com/cdn-project/control-plane/config"
+	"github.com/cdn-project/control-plane/monitor"
+	"github.com/cdn-project/control-plane/registry"
 	"github.com/gin-gonic/gin"
 )
+
+var edges = make(map[string]*registry.Edge)
 
 type RegisterRequest struct {
 	EdgeID string `json:"edge_id"`
@@ -18,9 +24,14 @@ type HeartbeatRequest struct {
 }
 
 func main() {
-	appConfig = loadConfig()
+	fmt.Println("Attempting to load config...")
+	appConfig := config.LoadConfig()
+	fmt.Printf("Config loaded! Starting server on port %d\n", appConfig.ServerPort)
 
-	StartHealthMonitor()
+	monitor.StartHealthMonitor(
+		appConfig.HealthCheckIntervalSeconds,
+		appConfig.HeartbeatTimeoutSeconds,
+	)
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
@@ -44,10 +55,10 @@ func registerEdge(c *gin.Context) {
 
 	ip := c.ClientIP()
 
-	mu.Lock()
-	defer mu.Unlock()
+	registry.Mu.Lock()
+	defer registry.Mu.Unlock()
 
-	edges[req.EdgeID] = &Edge{
+	edges[req.EdgeID] = &registry.Edge{
 		ID:       req.EdgeID,
 		IP:       ip,
 		Port:     req.Port,
@@ -66,8 +77,8 @@ func heartbeat(c *gin.Context) {
 		return
 	}
 
-	mu.Lock()
-	defer mu.Unlock()
+	registry.Mu.Lock()
+	defer registry.Mu.Unlock()
 
 	edge, ok := edges[req.EdgeID]
 	if !ok {
@@ -82,8 +93,8 @@ func heartbeat(c *gin.Context) {
 }
 
 func resolve(c *gin.Context) {
-	mu.Lock()
-	defer mu.Unlock()
+	registry.Mu.Lock()
+	defer registry.Mu.Unlock()
 
 	for _, edge := range edges {
 		if edge.Alive {
@@ -101,8 +112,8 @@ func resolve(c *gin.Context) {
 }
 
 func listEdges(c *gin.Context) {
-	mu.Lock()
-	defer mu.Unlock()
+	registry.Mu.Lock()
+	defer registry.Mu.Unlock()
 
 	c.JSON(200, edges)
 }

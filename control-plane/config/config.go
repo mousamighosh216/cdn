@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"encoding/json"
@@ -11,10 +11,8 @@ type Config struct {
 	HealthCheckIntervalSeconds int `json:"health_check_interval_seconds"`
 }
 
-var appConfig Config
-
-func loadConfig() Config {
-	data, err := os.ReadFile("../config/config.json")
+func LoadConfig() Config {
+	data, err := os.ReadFile("config.json")
 	if err != nil {
 		panic("cannot read config.json")
 	}
