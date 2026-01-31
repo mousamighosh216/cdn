@@ -1,8 +1,45 @@
 package controlplane
 
-import "net/http"
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
+)
 
-func PostHeartbeat(url string, payload map[string]string) error {
-	_, err := http.Post(url+"/heartbeat", "application/json", nil)
-	return err
+var client = &http.Client{
+	Timeout: 5 * time.Second,
+}
+
+func Register(url string, edgeID string, region string, port int) error {
+	payload := map[string]interface{}{
+		"edge_id": edgeID,
+		"region":  region,
+		"port":    port,
+	}
+	body, _ := json.Marshal(payload)
+
+	resp, err := client.Post(url+"/register", "application/json", bytes.NewBuffer(body))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("registration failed: %d", resp.StatusCode)
+	}
+	return nil
+}
+
+func PostHeartbeat(url string, edgeID string) error {
+	payload := map[string]string{"edge_id": edgeID}
+	body, _ := json.Marshal(payload)
+
+	resp, err := client.Post(url+"/heartbeat", "application/json", bytes.NewBuffer(body))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	return nil
 }

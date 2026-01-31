@@ -1,0 +1,86 @@
+1. https://codeforces.com/problemset/problem/859/A 
+ex. total finalist kisi competition me 25 hone chahiye: 
+cases:-
+1) top 25 hi aa gaee
+2) 50 rank vala bhi aya iska matlab ye hua ki bich me kisi 25 ne mana kara iske baad bhi agar ham 52 ya upar leke jate hai to mana karne vale log badhenge 
+
+total teams bohot hai jisme ham 5 ko lenge usme 3 teams ko jannte hai like 2,3,7 to decline karne vali minimum teams ke liye ham suppose karenge 2,3,7,(4,5) iss hisab se 2 teams ne decline kara 
+
+2. https://codeforces.com/problemset/problem/2014/B
+codeforces ke liye answer valid nhi, loop use kar sakte hai but vo time limit exceed kar raha aur haan loop ke andar jake value 0 assign karna aur count vala loop hi valid hai
+
+you have to calculate it for all trees whose leaf will last till n th year and life span of leaves given is k years.
+so, leaves of tree from n - k + 1 to n will last
+your loop runs from n to n + k and that is the mistake.
+
+if you want to correct it, run it from n - k + 1 to n.
+for(int i = n; i > n - k; i--)
+After doing this you will pass with few test 
+
+3. https://codeforces.com/problemset/problem/1877/A
+test 1: 2 teams a & b; ta tb -> c d (goals)
+eff ta =c-d; eff tb =d-c ; eff (ta+tb) = c-d+d-c=0
+
+test 2: 3 teams 1,2,3: t1 t2 -> a b; t1 t3 -> c d; t2 t3 -> e f
+eff t1= a+c-b-d; eff t2=b+e-a-f; eff t3 = d+f-c-e; eff(t1+t2+t3) = 0
+it goes on like this
+
+4.https://codeforces.com/contest/1881/problem/A
+check len of str1 if str1<str2 append str1 to it and keep a count till str1> str2 this will handle those cases where n<m then check if str2 is substr of str1 if yes print count for those cases where n>=m add str to str in the else statement and c++ check if str2 now occurs in str1 yes then print c else -1
+
+what i did was first check if str2 already occurs in str1 if not then use for loop till len(str2) to increment str1 and check if str2 occurs or not,then again added a find statement to get those which are giving -1 as ans other then this two count variable one too increment other to store the min value for the occurrence 
+
+but this code gave tle why?
+ n the loop, the find function will take O(n*m) time for every  i from 0 to m , and since the size of the string str doubles with each iteration until , the overall complexity increases significantly due to the exponential growth of str.In the loop, the size of str grows as  n,2n,4n,8n,16n,32n,64n,-----,2^(m)n
+
+how can we resolve tle mere hi logic ko change na karte hue.. -> loop 1 2 4 8 16 32 64 aese work kaar rha mera loop m tak ka hai worst case me m=25 rahega jiise tle aa rha, max n bhi 25 tak hi aa sakta hai to hame str+=str loop ka requirement 2^5 tak hi hai.. so loop ko m tak na chala ke 5 tak se kaam ho jaega
+
+5. https://codeforces.com/contest/1845/problem/A
+what i did had too many cases try to find better one till then khush raho 
+
+if k=1,x=1 (no)
+
+if(n=even) k=2,x=1 avl:2 
+x=2 avl:1
+k>2,x=2 avl:1,3
+x=3 avl:2
+
+if(n=odd) k=2,x=1 (no) 
+x>1 avl:1
+k>2,x=1 avl:2,3 (check code for more info)-> idhar aur cond hai imp
+x=2 avl:1,3
+x=3 avl:1,2  
+
+6.https://codeforces.com/contest/1581/problem/A
+by precomputation we stored permutation values but here is a catch ans is (2n!/2) so what we did is pehle se hi 2 count nhi kiya as atlast we had to divide by 2 so usse 2 haat jata to pehle hi hata dia alag se 2 store karne ka ye logic hai ki if n=1 then vo 2 baan jaega whose permutation is also 2, 2/2=1 so iss case ke liye alag se store kara.
+
+agar alag se divide kar rhe the to overflow ka case baan ja rha tha..
+
+and why always half of total permutation uska logic ye hai ki particular eak pattern me max valid 2n-1 hi ho sakte hai even pattern + reverse(pattern)=2n-1 ye always valid hai so dono me se eak count kro too bhi kaam chalega...
+
+7.https://codeforces.com/contest/2060/problem/C
+1 RTE: becs mne iterator ka increment loop chalaya tha which can have memory related issue 
+2 RTE: isme erase badme ho rha tha so ex. 1 1 3 2 nos.  and sum=4 too ans 1 3, 2 2 aa rha tha 
+
+isiliye no. ko pre store kar ke erase kaar dia 
+
+8. https://codeforces.com/contest/1904/problem/A
+sabse Pehle possible pattern nikale uske liye 2 array use kiye with elements a,-a and 2nd b,-b then q and k vector me accly values insert kare 
+
+if a=b then possible cases 4 honge else 8  then vector me loop lga ke check kar lo
+
+my other approach was all practically possible cases but i am missing something in those
+
+9.https://codeforces.com/contest/2057/problem/B
+so if we have n==k then loop sare ele inc kar lega so ans 0 ho jaega to prevent that Pehle hi k ka count k--
+
+then use map to count occurrence and pushback them into a vector sort them run a loop on it to subtract with k if k<0 then break the loop but use Pehle value change karo uss index ki 
+
+last me eak aur loop to count nos. which aren't 0
+
+8. https://codeforces.com/contest/1875/problem/A
+given ans will be min(xi+c,a) so to maximise sum ham jab no. 1 pohoch jaega tab new num lenge so c=1  => min(xi+1,a)  
+
+ab bomb choose karne me bhi 1 sec laga hoga so min(xi+1,a) - 1 => min(xi,a-1)
+
+adding Pehle se jo time bacha tha summation(min(xi,a-1)) +b
