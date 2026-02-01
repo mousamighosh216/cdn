@@ -12,6 +12,8 @@ type Config struct {
 	Port              int    `json:"port"`
 	HeartbeatInterval int    `json:"heartbeat_interval"`
 	ControlPlaneURL   string `json:"control_plane_url"`
+	OriginURL         string `json:"origin_url"` // Add this
+	CacheDir          string `json:"cache_dir"`  // Add this
 }
 
 func Load() *Config {

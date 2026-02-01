@@ -36,10 +36,19 @@ func PostHeartbeat(url string, edgeID string) error {
 	payload := map[string]string{"edge_id": edgeID}
 	body, _ := json.Marshal(payload)
 
-	resp, err := client.Post(url+"/heartbeat", "application/json", bytes.NewBuffer(body))
+	// Use fmt.Sprintf to ensure the path is clean
+	fullURL := fmt.Sprintf("%s/heartbeat", url)
+
+	resp, err := client.Post(fullURL, "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
+
+	// IMPORTANT: Check the status code!
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("heartbeat failed with status: %d", resp.StatusCode)
+	}
+
 	return nil
 }

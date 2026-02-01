@@ -21,7 +21,11 @@ func main() {
 
 	// 2. Background Heartbeat
 	go heartbeat.Start(cfg.EdgeID, cfg.HeartbeatInterval, func(payload map[string]string) error {
-		return controlplane.PostHeartbeat(cfg.ControlPlaneURL, payload["edge_id"])
+		err := controlplane.PostHeartbeat(cfg.ControlPlaneURL, payload["edge_id"])
+		if err != nil {
+			log.Printf("HEARTBEAT ERROR: %v", err) // This will now show the 404 clearly
+		}
+		return err
 	})
 
 	// 3. REAL CDN LOGIC START
@@ -43,7 +47,7 @@ func main() {
 		}
 
 		// B. CACHE MISS: Fetch from Origin (Port 9000)
-		originURL := "http://localhost:9000" + r.URL.Path
+		originURL := cfg.OriginURL + r.URL.Path
 		log.Printf("MISS: Fetching %s from Origin", r.URL.Path)
 
 		resp, err := http.Get(originURL)

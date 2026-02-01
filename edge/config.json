@@ -3,5 +3,7 @@
   "region": "india-west",
   "port": 9001,
   "control_plane_url": "http://localhost:8080",
-  "heartbeat_interval": 5
+  "heartbeat_interval": 5,
+  "origin_url": "http://localhost:9000",
+  "cache_dir": "./cache"
 }
