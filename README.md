@@ -23,7 +23,7 @@ graph TD
     Client --> Edge
     Edge -->|Cache Miss| Origin
     Edge -->|Register / Heartbeat| ControlPlane
-
+```
 ---
 
 ### Components
