@@ -6,7 +6,7 @@ COPY go.mod ./
 RUN go mod download
 
 COPY . .
-RUN go build -o origin .
+RUN go build -o edge ./cmd/edge/main.go
 
-EXPOSE 9000
-CMD ["./origin"]
+EXPOSE 9001
+CMD ["./edge"]

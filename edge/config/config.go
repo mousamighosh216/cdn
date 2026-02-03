@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"os"
+	"strconv"
 )
 
 // these variables defined here are used up in heartbeat file
@@ -27,6 +28,28 @@ func Load() *Config {
 	if err := json.NewDecoder(file).Decode(&cfg); err != nil {
 		panic("failed to decode config.json: " + err.Error())
 	}
+
+	// --- DOCKER OVERRIDES START ---
+	// This part allows docker-compose.yml to change settings on the fly
+
+	if envID := os.Getenv("EDGE_ID"); envID != "" {
+		cfg.EdgeID = envID
+	}
+
+	if envCP := os.Getenv("CONTROL_PLANE_URL"); envCP != "" {
+		cfg.ControlPlaneURL = envCP
+	}
+
+	if envOrigin := os.Getenv("ORIGIN_URL"); envOrigin != "" {
+		cfg.OriginURL = envOrigin
+	}
+
+	if envPort := os.Getenv("EDGE_PORT"); envPort != "" {
+		if p, err := strconv.Atoi(envPort); err == nil {
+			cfg.Port = p
+		}
+	}
+	// --- DOCKER OVERRIDES END ---
 
 	// validations
 	if cfg.EdgeID == "" {

@@ -1,0 +1,8 @@
+FROM golang:1.25-alpine
+WORKDIR /app
+COPY go.mod ./
+RUN go mod download
+COPY . . 
+RUN go build -o dns-resolver ./cmd/resolver/main.go
+EXPOSE 7000
+CMD [ "./dns-resolver" ]

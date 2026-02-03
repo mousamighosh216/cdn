@@ -1,12 +1,8 @@
 FROM golang:1.25-alpine
-
 WORKDIR /app
-
-COPY go.mod ./
+COPY go.mod go.sum ./
 RUN go mod download
-
 COPY . .
-RUN go build -o edge ./cmd/edge
-
+RUN go build -o main ./cmd/server/main.go
 EXPOSE 8080
-CMD ["./edge"]
+CMD ["./main"]

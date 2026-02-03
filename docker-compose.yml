@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  control-plane:
+    build: ./control-plane
+    ports:
+      - "8080:8080"
+    networks:
+      - cdn-net
+
+  origin:
+    build: ./origin
+    volumes:
+      - ./origin/storage:/app/storage # Map your local files to the container
+    ports:
+      - "9000:9000"
+    networks:
+      - cdn-net
+
+  edge:
+    build: ./edge
+    environment:
+      - CONTROL_PLANE_URL=http://control-plane:8080
+      - ORIGIN_URL=http://origin:9000
+      - EDGE_ID=edge-mumbai-1
+      - EDGE_PORT=9001
+    ports:
+      - "9001:9001"
+    depends_on:
+      - control-plane
+    networks:
+      - cdn-net
+
+  # edge-2:
+  #   build: ./edge
+  #   environment:
+  #     - CONTROL_PLANE_URL=http://control-plane:8080
+  #     - ORIGIN_URL=http://origin:9000
+  #     - EDGE_ID=edge-london-2
+  #     - EDGE_PORT=9002
+  #   ports:
+  #     - "9002:9002"
+  #   depends_on:
+  #     - control-plane
+  #   networks:
+  #     - cdn-net
+
+  dns-resolver:
+    build: ./dns-resolver
+    environment:
+      - CONTROL_PLANE_URL=http://control-plane:8080
+    ports:
+      - "7000:7000"
+    depends_on:
+      - control-plane
+    networks:
+      - cdn-net
+
+networks:
+  cdn-net:
+    driver: bridge

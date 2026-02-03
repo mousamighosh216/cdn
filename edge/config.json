@@ -1,9 +1,5 @@
 {
-  "edge_id": "edge-mumbai",
-  "region": "india-west",
-  "port": 9001,
-  "control_plane_url": "http://localhost:8080",
+  "edge_id": "temp-id",
   "heartbeat_interval": 5,
-  "origin_url": "http://localhost:9000",
   "cache_dir": "./cache"
 }
