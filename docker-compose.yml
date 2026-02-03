@@ -25,7 +25,7 @@ services:
       - EDGE_ID=edge-mumbai-1
       - EDGE_PORT=9001
     ports:
-      - "9001:9001"
+      - "9001-9010:9001"
     depends_on:
       - control-plane
     networks:

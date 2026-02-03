@@ -16,6 +16,11 @@ import (
 func main() {
 	cfg := config.Load()
 
+	hostname, err := os.Hostname()
+	if err == nil && hostname != "" {
+		// This will change "edge-mumbai" into "edge-mumbai-a1b2c3d4"
+		cfg.EdgeID = fmt.Sprintf("%s-%s", cfg.EdgeID, hostname)
+	}
 	// 1. Control Plane Registration
 	controlplane.Register(cfg.ControlPlaneURL, cfg.EdgeID, cfg.Region, cfg.Port)
 

@@ -34,6 +34,12 @@ func Load() *Config {
 
 	if envID := os.Getenv("EDGE_ID"); envID != "" {
 		cfg.EdgeID = envID
+	} else {
+		// 2. Fallback: Use the Docker Container Hostname as a unique ID
+		hostname, err := os.Hostname()
+		if err == nil && hostname != "" {
+			cfg.EdgeID = "edge-" + hostname
+		}
 	}
 
 	if envCP := os.Getenv("CONTROL_PLANE_URL"); envCP != "" {
